@@ -349,8 +349,8 @@ def readbestTauB(ion, runName):
     for line in openfile:
         splitLine = line.split(', ')
         if splitLine[0] == runName:
-            Taus.append(float(splitLine[3]))
-            bs.append(float(splitLine[6]))
+            Taus.append(float(splitLine[2]))
+            bs.append(float(splitLine[1]))
 
     return Taus, bs
 
@@ -368,14 +368,13 @@ for ion in ionList:
         #profile = model(taus[0], bs[0], x)
         #ax.plot(x[0:7800], profile[0:7800], label = ion['ion'], color = ion['color'])
         ax[ion['axis'][0], ion['axis'][1]].scatter(np.log10(bs), np.log10(taus), label=run['Name_plot'], marker = run['marker'], color = run['color'])
-    ax[ion['axis'][0], ion['axis'][1]].set_xlim(-3.25, 2.0)
-    #ax[ion['axis'][0], ion['axis'][1]].set_title(ion['ion'])
-    ax[ion['axis'][0], ion['axis'][1]].annotate(ion['ion'], xy = ion['loc'], fontsize = 15 )
+    #ax[ion['axis'][0], ion['axis'][1]].set_xlim(-3.25, 2.0)
+    #ax[ion['axis'][0], ion['axis'][1]].annotate(ion['ion'], xy = ion['loc'], fontsize = 15 )
     #if ion['ion'] in ['C III', 'Si IV', 'O VI', 'Mg II']:
     #    ax[ion['axis'][0], ion['axis'][1]].plot([ion['split'][0], ion['split'][2]], [ion['split'][1], ion['split'][3]], linestyle = 'dashed', color = 'gray', alpha = 0.9)
 
-ax[3,0].set_xlabel(r'$log(q)$', fontsize=14)
-ax[2,0].set_ylabel(r'$log(N)$', fontsize=14)
+ax[3,0].set_xlabel(r'$log(v_0)$', fontsize=14)
+ax[2,0].set_ylabel(r'$log(b)$', fontsize=14)
 ldg = ax[3, 0].legend(loc='upper left', bbox_to_anchor=(0.05, -0.2), fontsize=10, ncol=4)
 #box = ax[ion['axis'][0], ion['axis'][1]].get_position()
 #ax[ion['axis'][0], ion['axis'][1]].set_position([box.x0, box.y0, box.width * 0.8, box.height])
@@ -386,4 +385,4 @@ plt.tight_layout()
 
 
 #fig.savefig('../rankTau'+ion['ionfolder']+ion['ionfolder'][1:-1]+'.png')
-fig.savefig('Num_jumboVel_dashed.png', bbox_extra_artists=(ldg,), bbox_inches='tight')
+fig.savefig('bv_jumboVel_dashed.png', bbox_extra_artists=(ldg,), bbox_inches='tight')
