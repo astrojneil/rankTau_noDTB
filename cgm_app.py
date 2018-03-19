@@ -10,7 +10,6 @@ import scipy
 
 kpc = 3.086e+21*centimeter
 c_speed = 3.0e10  #cm/s
-c_km = 3.0e5 #km/s
 mp = 1.6726e-24*gram #grams
 kb = 1.3806e-16*erg/Kelvin   #egs/K
 
@@ -30,8 +29,8 @@ def convert_to_vel(filename, rest_wave):
     wavelength = np.array(wavelength)
     flux = np.array(flux)
     vel = c_speed*(wavelength/rest_wave -1)
-    #returns with velocities in km/s
-    return vel*1e-5, flux
+    #returns with velocities in cm/s
+    return vel, flux
 
 def openIonFile(ion, runName):
     openfile = open('../rankNum'+ion['ionfolder']+ion['ionfolder'][1:-1]+'_bestFitParameters.txt', 'r')
@@ -52,21 +51,6 @@ def openIonFile(ion, runName):
 
 def model(t, b, x):
     return t*(0.01)/(1.01-x**b)
-
-def makeObsList(lev1, lev2, lev3):
-        out = []
-        for i in range(lev1):
-                mid = []
-                for i in range(lev2):
-                        inner = []
-                        for i in range(lev3):
-                                inner.append([])
-                        mid.append(inner)
-                out.append(mid)
-
-        final = out
-        return final
-
 
 def main():
 ##### Runs to have spectra generated #######
@@ -170,21 +154,21 @@ def main():
 
 #add the runs to the list that will have spectra generated
     runList = []
-    runList.append(run1)
-    runList.append(run2)
-    runList.append(run3)
+    #runList.append(run1)
+    #runList.append(run2)
+    #runList.append(run3)
     runList.append(run4)
     runList.append(run5)
     runList.append(run6)
-    runList.append(run7)
-    runList.append(run8)
-    runList.append(run9)
-    runList.append(run10)
-    runList.append(run11)
-    runList.append(run12)
-    runList.append(run13)
-    runList.append(run14)
-    runList.append(run15)
+    #runList.append(run7)
+    #runList.append(run8)
+    #runList.append(run9)
+    #runList.append(run10)
+    #runList.append(run11)
+    #runList.append(run12)
+    #runList.append(run13)
+    #runList.append(run14)
+    #runList.append(run15)
     runList.append(run16)
     runList.append(run17)
     runList.append(run18)
@@ -267,9 +251,9 @@ def main():
             'massNum': 2.0}
 
     ionList = []
-    ionList.append(ion1)
+    #ionList.append(ion1)
     ionList.append(ion2)
-    ionList.append(ion3)
+    #ionList.append(ion3)
     ionList.append(ion4)
     #ionList.append(ion5)
     #ionList.append(ion6)
@@ -278,22 +262,28 @@ def main():
     ionList.append(ion9)
     #ionList.append(ion10)
 
-    writefile = open('../rankNum/rankNum_outflowApp_gauss.txt', 'w')
-    writefile.write('RunName, averageChi2_alpha, averageChi2_beta, maximumChi2_alpha, maximumChi2_beta, alpha_maxChi2, beta_maxChi2\n')
+    #writefile = open('../rankTau/ranktau_outflowApp.txt', 'w')
+    #writefile.write('RunName, averageChi2_alpha, averageChi2_beta, maximumChi2_alpha, maximumChi2_beta\n')
 
-    otherwrite = open('../rankNum/rankNum_outflow_actualBestFit_gauss.txt', 'w')
-    otherwrite.write('RunName, vel, alpha, beta\n')
+    otherwrite = open('../rankNum/rankNum_cgm_actualBestFit.txt', 'w')
+    otherwrite.write('RunName, vel, beta, betaChi\n')
 
-    alphas = np.logspace(-4, 3, 5000)
-    betas = np.logspace(-4, 3, 5000)
+    alphas = np.logspace(-5, 2, 10000)
+    betas = np.logspace(-5, 2, 10000)
 
     for run in runList:
-        print('starting run: '+run['Name'])
         #save a lot of info
         runMultiCloud = np.zeros((len(ionList), 4))  #run[row][col] = run[ion][vel]
         runSingleCloud = np.zeros((len(ionList), 4))
         ionInfo = np.zeros((len(ionList), 4, 6))  #ion[ion][vel][param]
-        obsFlux = makeObsList(len(ionList), 4, 0) #obs[ion][vel][flux/noise]
+        obsFlux = np.zeros((len(ionList), 2)) #obs[ion][coldens/error]
+        obsFlux[0] = [14.2, 0.04] #CIV   - these are log10(N) and error on log10(N)
+        obsFlux[2] = [12.85, 0.12] #SiIII
+        obsFlux[1] = [13.5, 0.5] #CII
+        #obsFlux[0] = [14.5, 0.2] #OVI
+        #obsFlux[1] = [14.34, 0.2] #CIV
+        #obsFlux[2] = [13.17, 0.2] #SiIII
+
         for i in range(len(ionList)):
             #open ionfile, find the velocities=0 b=1 N=2 q=3 area=4 and sigma=5
             #returns a 4 by 4 array, one row for each velocity = singleIon[vel][param]
@@ -307,128 +297,51 @@ def main():
                 #load obs data as velocities/normalized fluxes
                 velocities, flux = convert_to_vel(ionList[i]['data_file'], ionList[i]['rest_wave'])
                 #save flux and variance
+                #make velocity bin negative to try to fit to the majority of the absorption profile
+                vel_flux = np.interp(-1.0*velBin, velocities, flux)
+                vel_var = (0.05)
 
-                #need to take a range of flux/velocity around the center, save these lists instead of one number
-                #vel_flux = np.interp(-1.0*velBin, velocities, flux)
-                #define the range of velocities applicable for this time (in km/s) (+/- b/2)
-                maxVel = 75.#singleIon[v][1]/2.
-                minVel = 75.#singleIon[v][1]/2.
+                #obsFlux[i][v][0] = vel_flux
+                #obsFlux[i][v][1] = vel_var
 
-                index_low = np.argmin(np.abs(np.array(velocities)+minVel))
-                index_high = np.argmin(np.abs(np.array(velocities)-maxVel))
-
-                vel_flux = flux[index_low:index_high+1]
-                vel_vel = velocities[index_low:index_high+1]
-                vel_var = (0.05)*np.ones(len(vel_flux))
-
-                obsFlux[i][v].append(vel_flux)
-                obsFlux[i][v].append(vel_vel)
-                obsFlux[i][v].append(vel_var)
         #now that information is saved, do the chisquare analysis
         alphaBest_in = []
-        betaBest_in = []
         alphaBest_chi = []
-        betaBest_chi = []
-        print('Done loading info, moving on to chi square fits')
+        fluxList = []
+        obsList = []
         for v in range(4):
-            maxBetaChi = 0.0
-            maxAlphaChi = 0.0
-            writeMaxBeta = 0.0
-            writeMaxAlpha = 0.0
 
-
-
-
-            betaChi = []
-            #ionChi = np.zeros((len(ionList), len(betas)))
-            for b in range(len(betas)):
-                sumChib = 0.0
-                for i in range(len(ionList)):
-                    chi_list = []
-                    #calculate the estimated flux with this beta
-                    for k in obsFlux[i][v][1]:
-                        def modelFun(x):
-                            tau_coef = (c_km*ionInfo[i][v][5])/(np.sqrt(np.pi)*ionInfo[i][v][1])
-                            tau = tau_coef*model(ionInfo[i][v][2], ionInfo[i][v][3], x)*np.exp(-(k + ionInfo[i][v][0])**2/(ionInfo[i][v][1])**2)
-                            return np.exp(-betas[b]*tau)
-                        estFlux = scipy.integrate.quad(modelFun, 0.0, 1.0)[0]
-                        #calculate the chisquare over all ions for this velocity for the single cloud case
-                        chi_term = (obsFlux[i][v][0] - estFlux)**2/obsFlux[i][v][2] #this becomes a list when doing in velocity space
-                        chi_list.append(chi_term)
-                    #will need to sum the chi list before adding them through ions
-                    chi = np.sum(chi_list)
-                    sumChib = sumChib + chi
-                    #ionChi[i][b] = ionChi[i][b] + chi
-                betaChi.append(sumChib)
-
-            print('Done with beta, moving on to alpha: '+str(v))
             alphaChi = []
-            for a in range(len(alphas)):
+            for alpha in alphas:
                 sumChia = 0.0
                 for i in range(len(ionList)):
-                    #calculate the estimated flux with this beta
-                    tau_coef = (c_km*ionInfo[i][v][5])/(np.sqrt(np.pi)*ionInfo[i][v][1])
-                    tau = tau_coef*ionInfo[i][v][4]*np.exp(-(obsFlux[i][v][1]+ ionInfo[i][v][0])**2/(ionInfo[i][v][1])**2)
-                    estFlux = np.exp(-alphas[a]*tau)
-                    #calculate the chisquare over all ions for this velocity for the multi cloud case
-                    chi_list = (obsFlux[i][v][0] - estFlux)**2/obsFlux[i][v][2]#this becomes a list when doing in velocity space
-                    #will need to sum the chi list before adding them through ions
-                    chi = np.sum(chi_list)
+                    estN = np.log10(alpha*ionInfo[i][v][4]) #log10(area) log10(average N)
+                    chi = (obsFlux[i][0] - estN)**2/obsFlux[i][1]
+                    if i==2:
+                        fluxList.append(estN)
+                        #obsList.append(np.exp(-1*(10**(obsFlux[i][0]))*tauTerm*ionList[i]['sigma']))
+                    #print(np.exp(-1*(10**(obsFlux[i][0]))*c_speed*ionList[i]['sigma']))
                     sumChia = sumChia + chi
-                    #ionChi[i][a] = ionChi[i][a] + chi
-
                 alphaChi.append(sumChia)
-            print('Done with alpha, writing to file: '+str(v))
+
             #find minmum of chiSquares
             minChia_index = np.argmin(alphaChi)
             alphaBest_in.append(minChia_index)
             alphaBest_chi.append(alphaChi[minChia_index])
 
-            minChib_index = np.argmin(betaChi)
-            betaBest_in.append(minChib_index)
-            betaBest_chi.append(betaChi[minChib_index])
+            plt.plot(alphas, alphaChi)
+            plt.yscale('log')
+            plt.xscale('log')
+            fig = plt.gcf()
+            fig.savefig('test.png')
 
-            if alphaChi[minChia_index] > maxAlphaChi:
-                writeMaxAlpha = alphas[minChia_index]
-                maxAlphaChi = alphaChi[minChia_index]
-
-            if run['Name'][-5:] !='_cond':
-                betaWrite = betas[minChib_index]
-                if  betaChi[minChib_index] > maxBetaChi:
-                    writeMaxBeta = betaWrite
-                    maxBetaChi = betaChi[minChib_index]
-            else:
-                betaWrite = '--'
-                writeMaxBeta = '--'
             #print/save results
-            otherwrite.write(run['Name']+', '+str(v)+', '+str(alphas[minChia_index])+', '+str(betaWrite)+'\n')
-            #plt.plot(alphas, alphaChi)
-            #plt.plot(alphas, ionChi[0], label = 'OVI')
-            #plt.plot(alphas, ionChi[1], label = 'CIV')
-            #plt.plot(alphas, ionChi[2], label = 'NV')
-            #plt.plot(alphas, ionChi[3], label = 'CII')
-            #plt.plot(alphas, ionChi[4], label = 'SiIV')
-
-            #plt.ylim(-10, 150)
-            #plt.ylabel('Chi square')
-            #plt.xlabel('beta')
-            #plt.yscale('log')
-            #plt.xscale('log')
-            #plt.legend()
-
-            #fig = plt.gcf()
-            #fig.savefig("betaChi_test.png")
-        if run['Name'][-5:] != '_cond':
-            betaAvg = np.average(betaBest_chi)
-            betaMax = np.max(betaBest_chi)
-        else:
-            betaAvg = '--'
-            betaMax = '--'
+            otherwrite.write(run['Name']+', '+str(v)+', '+str(alphas[minChia_index])+', '+str(alphaChi[minChia_index])+'\n')
 
         #find the average and maximum chiSquares across velocities
         #save this information to a file
-        writefile.write(run['Name']+', '+str(np.average(alphaBest_chi))+', '+str(betaAvg)+', '+str(np.max(alphaBest_chi))+', '+str(betaMax)+', '+str(writeMaxAlpha)+', '+str(writeMaxBeta)+'\n')
-        print('done writing to file!')
+        #writefile.write(run['Name']+', '+str(np.average(alphaBest_chi))+', '+str(betaAvg)+', '+str(np.max(alphaBest_chi))+', '+str(betaMax)+'\n')
+
 
 
 

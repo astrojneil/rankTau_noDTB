@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.integrate
 kpc = 3.086e21
 c = 3.e5
+c_km = 3.e5
 
 #function to read in spectrum, convert to velocity and return
 #wavelength and flux numpy arrays
@@ -45,16 +46,18 @@ def openRun(runName, filename):
     return singleIon
 
 def openIonFile(ion, runName):
-    openfile = open('../rankTau'+ion['ionfolder']+ion['ionfolder'][1:-1]+'_bestFitParameters_3.txt', 'r')
-    singleIon = np.zeros((4,4))
+    openfile = open('../rankNum'+ion['ionfolder']+ion['ionfolder'][1:-1]+'_bestFitParameters.txt', 'r')
+    singleIon = np.zeros((4,6))
     vel = 0
     for line in openfile:
         ls = line.split(', ')
         if ls[0] == runName:
             singleIon[vel][0] = float(ls[1]) #velocity
-            singleIon[vel][1] = float(ls[2]) #tau
-            singleIon[vel][2] = float(ls[5]) #q
-            singleIon[vel][3] = float(ls[8]) #area
+            singleIon[vel][1] = float(ls[2]) #b
+            singleIon[vel][2] = float(ls[3]) #N
+            singleIon[vel][3] = float(ls[6]) #q
+            singleIon[vel][4] = float(ls[9])  #area
+            singleIon[vel][5] = ion['sigma']  #sigma
             vel = vel+1
 
     return singleIon
@@ -232,7 +235,7 @@ runList.append(run20)
 runList.append(run21)
 runList.append(run22)
 
-bestFitFile = '../rankTau/ranktau_outflow_actualBestFit.txt'
+bestFitFile = '../rankNum/rankNum_outflow_actualBestFit_gauss.txt'
 
 for run in runList:
     runInfo = openRun(run['Name'], bestFitFile)
@@ -244,25 +247,31 @@ for run in runList:
         estFlux_a = []
         estFlux_b = []
         fitvel = []
-        for v in range(4):
+        obsvel, obsflux = convert_to_vel(ionList[i]['ion'], ionList[i]['rest_wave'])
+        for v in range(1):
             if run['Name'][-5:] !='_cond':
-                def modelFun(x):
-                    return np.exp(-runInfo[v][2]*model(singleIon[v][1], singleIon[v][2], x))
-                Flux_b = scipy.integrate.quad(modelFun, 0.0, 1.0)[0]
-                estFlux_b.append(Flux_b)
+                for k in obsvel:
+                    def modelFun(x):
+                        tau_coef = (c_km*singleIon[v][5])/(np.sqrt(np.pi)*singleIon[v][1])*np.exp(-(k + singleIon[v][0])**2/(singleIon[v][1])**2)
+                        return np.exp(-runInfo[v][2]*tau_coef*model(singleIon[v][2], singleIon[v][3], x))
+                    Flux_b = scipy.integrate.quad(modelFun, 0.0, 1.0)[0]
+                    estFlux_b.append(Flux_b)
 
-            Flux_a = np.exp(-runInfo[v][1]*singleIon[v][3])
+            tau_coef = (c_km*singleIon[v][5])/(np.sqrt(np.pi)*singleIon[v][1])*np.exp(-(obsvel + singleIon[v][0])**2/(singleIon[v][1])**2)
+            Flux_a = np.exp(-runInfo[v][1]*tau_coef*singleIon[v][4])
 
-            fitvel.append(-runInfo[v][0])
+            fitvel.append(-singleIon[v][0])
             estFlux_a.append(Flux_a)
 
 
 
-        obsvel, obsflux = convert_to_vel(ionList[i]['ion'], ionList[i]['rest_wave'])
+
         ax[i].plot(obsvel, obsflux)
-        ax[i].scatter(fitvel, estFlux_a, color = 'red')
+        #ax[i].scatter(fitvel, estFlux_a, color = 'red')
+        ax[i].plot(obsvel, Flux_a, color = 'red')
         if run['Name'][-5:] !='_cond':
-            ax[i].scatter(fitvel, estFlux_b, color = 'green')
+            #ax[i].scatter(fitvel, estFlux_b, color = 'green')
+            ax[i].plot(obsvel, estFlux_b, color = 'green')
 
         ax[i].set_xlim(-600, 200)
         ax[i].set_title(ionList[i]['ion'])
@@ -275,6 +284,6 @@ for run in runList:
 
     fig = plt.gcf()
     fig.set_size_inches(6.5, 10.5)
-    fig.savefig('outflowApp/testOutflowApp_'+run['Name']+'.png')
+    fig.savefig('outflowApp/OutflowApp_'+run['Name']+'_test.png')
 
     plt.close()
