@@ -16,7 +16,7 @@ red1 = '#df4c4c'
 red2 = '#d20000'
 red3 = '#930000'
 
-##### Runs to have spectra generated #######
+##### runs to have spectra generated #######
 run1 = { 'Name':'T0.3_v1000_chi300_cond',
         'Name_plot':'M3.6-v1000-T0.3-c',
         'Dir':'../../Blob_paper2/Files/',
@@ -182,6 +182,8 @@ run22 = { 'Name':'LowCond_v1700_chi300_cond',
 
 
 
+
+
 runListTemp = []
 runListTemp.append(run1)
 runListTemp.append(run2)
@@ -264,28 +266,60 @@ ion1 = {'ion':'O VI',
             'color': 'brown',
             'axis': [2, 1],
             'loc':[-3.0, 18],
-            'split':[0.0, -2.4, 0.0, 3.4]}
+            'split':[0.0, -2.4, 0.0, 3.4],
+            'x_cool':-2.027,
+            'y_cool':13.88,
+            'dx_cool':0.935,
+            'dy_cool':0.744,
+            'x_cond':0.365,
+            'y_cond':14.28,
+            'dx_cond':0.619,
+            'dy_cond':2.74}
 ion2 = {'ion':'Mg II',
             'fieldname':'Mg_p1_number_density',
             'ionfolder': '/MgII/',
             'color': 'green',
             'axis': [3, 1],
             'loc':[-3.0, 16.5],
-            'split':[-2.25, -1.5, 2, -1.5]}
+            'split':[-2.25, -1.5, 2, -1.5],
+            'x_cool':-1.413,
+            'y_cool':14.15,
+            'dx_cool':1.54,
+            'dy_cool':1.231,
+            'x_cond':0.231,
+            'y_cond':15.58,
+            'dx_cond':0.266,
+            'dy_cond':-0.071}
 ion3 = {'ion':'N V',
             'fieldname':'N_p4_number_density',
             'ionfolder': '/NV/',
             'color': 'red',
             'axis': [2, 0],
             'loc':[-3.0, 18],
-            'split':[-0.2, -2.4, -0.2, 3.4]}
+            'split':[-0.2, -2.4, -0.2, 3.4],
+            'x_cool':-1.993,
+            'y_cool':13.26,
+            'dx_cool':0.952,
+            'dy_cool':0.723,
+            'x_cond':0.361,
+            'y_cond':13.56,
+            'dx_cond':0.163,
+            'dy_cond':3.098}
 ion4 = {'ion':'C IV',
             'fieldname':'C_p3_number_density',
             'ionfolder': '/CIV/',
             'color': 'orange',
-            'axis': [1, 0],
+            'axis': [1, 1],
             'loc':[-3.0, 18.4],
-            'split':[-2.25, 3, 2, 3]}
+            'split':[-2.25, 3, 2, 3],
+            'x_cool':-1.59,
+            'y_cool':15.911,
+            'dx_cool':1.463,
+            'dy_cool':1.022,
+            'x_cond':0.1736,
+            'y_cond':17.17,
+            'dx_cond':0.4335,
+            'dy_cond':0.3603}
 ion5 = {'ion':'Si III',
             'fieldname':'Si_p2_number_density',
             'ionfolder': '/SiIII/',
@@ -297,23 +331,47 @@ ion6 = {'ion':'Si IV',
             'fieldname':'Si_p3_number_density',
             'ionfolder': '/SiIV/',
             'color': 'blue',
-            'axis': [1, 1],
+            'axis': [1, 0],
             'loc':[-3.0, 18.5],
-            'split':[-2.25, 2.5, 2, 2.5]}
-ion7 = {'ion':'Ne VII',
-            'fieldname':'Ne_p6_number_density',
-            'ionfolder': '/NeVII/',
+            'split':[-2.25, 2.5, 2, 2.5],
+            'x_cool':-1.512,
+            'y_cool':15.486,
+            'dx_cool':1.482,
+            'dy_cool':1.081,
+            'x_cond':0.1925,
+            'y_cond':16.76,
+            'dx_cond':0.406,
+            'dy_cond':0.177}
+ion7 = {'ion':'Ne VIII',
+            'fieldname':'Ne_p7_number_density',
+            'ionfolder': '/NeVIII/',
             'color':'pink',
             'axis': [3, 0],
             'loc':[-3.0, 16.5],
-            'split':[-2.25, 0.8, 1.7, -2.8]}
+            'split':[-2.25, 0.8, 1.7, -2.8],
+            'x_cool':-2.104,
+            'y_cool':13.037,
+            'dx_cool':0.875,
+            'dy_cool':0.824,
+            'x_cond':-.1011,
+            'y_cond':13.709,
+            'dx_cond':0.459,
+            'dy_cond':0.8305}
 ion8 = {'ion':'H I',
             'fieldname':'H_p0_number_density',
             'ionfolder': '/HI/',
             'color':'gray',
             'axis': [0, 0],
             'loc':[-3.0, 19.5],
-            'split':[-4, 4.25, 2, 4.25]}
+            'split':[-4, 4.25, 2, 4.25],
+            'x_cool':-1.423,
+            'y_cool':17.152,
+            'dx_cool':1.529,
+            'dy_cool':1.2078,
+            'x_cond':0.225,
+            'y_cond':18.56,
+            'dx_cond':0.2709,
+            'dy_cond':-0.0257}
 ion9 = {'ion':'C II',
             'fieldname':'C_p1_number_density',
             'ionfolder': '/CII/',
@@ -327,7 +385,15 @@ ion10 = {'ion':'C III',
             'color': 'magenta',
             'axis': [0, 1],
             'loc':[-3.0, 19.5],
-            'split':[-2.25, 4.1, 2, 4.1]}
+            'split':[-2.25, 4.1, 2, 4.1],
+            'x_cool':-1.52,
+            'y_cool':16.66,
+            'dx_cool':1.512,
+            'dy_cool':1.107,
+            'x_cond':0.2026,
+            'y_cond':17.99,
+            'dx_cond':0.418,
+            'dy_cond':0.214}
 
 
 ionList = []
@@ -343,14 +409,14 @@ ionList.append(ion8)
 ionList.append(ion10)
 
 def readbestTauB(ion, runName):
-    openfile = open('../rankNum_noDTB'+ion['ionfolder']+ion['ionfolder'][1:-1]+'_bestFitParameters.txt', 'r')
+    openfile = open('../rankNum'+ion['ionfolder']+ion['ionfolder'][1:-1]+'_bestFitParameters_withTemp.txt', 'r')
     Taus = []
     bs = []
     for line in openfile:
         splitLine = line.split(', ')
         if splitLine[0] == runName:
-            Taus.append(float(splitLine[3]))
-            bs.append(float(splitLine[6]))
+            Taus.append(float(splitLine[4]))
+            bs.append(float(splitLine[7]))
 
     return Taus, bs
 
@@ -359,23 +425,82 @@ def model(t, b, x):
     return t*(0.01)/(1.01-x**b)
 
 #fig, ax = plt.subplots(nrows=2, ncols=2, sharex=True, sharey=True)
-fig, ax = plt.subplots(4, 2, sharey='row')
+fig, ax = plt.subplots(4, 2) #, sharey='row')
 for ion in ionList:
-
+    ind = 0.
+    cond_low = [0, 0]
+    cond_high = [0, 0]
+    cool_low = [0, 0]
+    cool_high = [0, 0]
+    print(ion['ion'])
     for run in runListVel:
+        ind = ind+1.
         taus, bs = readbestTauB(ion, run['Name'])
         x = np.linspace(0, 1, 7880)
-        #profile = model(taus[0], bs[0], x)
-        #ax.plot(x[0:7800], profile[0:7800], label = ion['ion'], color = ion['color'])
+
+'''
+        if ind in [1, 2, 3]:
+            b_avg = np.average(bs)
+            tau_avg = np.average(taus)
+            cond_low[0] = cond_low[0]+b_avg
+            cond_low[1] = cond_low[1]+tau_avg
+
+        if ind in [6, 7, 8]:
+            b_avg = np.average(bs)
+            tau_avg = np.average(taus)
+            cond_high[0] = cond_high[0]+b_avg
+            cond_high[1] = cond_high[1]+tau_avg
+
+        if ind in [9, 10, 11]:
+            b_avg = np.average(bs)
+            tau_avg = np.average(taus)
+            cool_low[0] = cool_low[0]+b_avg
+            cool_low[1] = cool_low[1]+tau_avg
+
+        if ind in [16, 17, 18]:
+            b_avg = np.average(bs)
+            tau_avg = np.average(taus)
+            cool_high[0] = cool_high[0]+b_avg
+            cool_high[1] = cool_high[1]+tau_avg
+'''
+
         ax[ion['axis'][0], ion['axis'][1]].scatter(np.log10(bs), np.log10(taus), label=run['Name_plot'], marker = run['marker'], color = run['color'])
+
+    ax[ion['axis'][0], ion['axis'][1]].arrow(ion['x_cool'], ion['y_cool'], ion['dx_cool'], ion['dy_cool'],
+        width = 0.05, head_width=0.2, length_includes_head = True, overhang = 0.3, color = 'black', alpha = 0.5)
+
+    ax[ion['axis'][0], ion['axis'][1]].arrow(ion['x_cond'], ion['y_cond'], ion['dx_cond'], ion['dy_cond'],
+        width = 0.05, head_width=0.2, length_includes_head = True, overhang = 0.3, color = 'red', alpha = 0.5)
     ax[ion['axis'][0], ion['axis'][1]].set_xlim(-3.25, 2.0)
-    #ax[ion['axis'][0], ion['axis'][1]].set_title(ion['ion'])
     ax[ion['axis'][0], ion['axis'][1]].annotate(ion['ion'], xy = ion['loc'], fontsize = 15 )
+    if ion['axis'][0] == 0:
+        ax[ion['axis'][0], ion['axis'][1]].set_ylim(16, 20)
+    if ion['axis'][0] == 1:
+        ax[ion['axis'][0], ion['axis'][1]].set_ylim(14.5, 19)
+    if ion['axis'][0] == 2:
+        ax[ion['axis'][0], ion['axis'][1]].set_ylim(12, 19)
+    if ion['axis'][0] == 3:
+        ax[ion['axis'][0], ion['axis'][1]].set_ylim(12, 17)
+
+'''
+    print('Cond:')
+    print(str(np.log10(cond_low[0]/3.))+', '+str(np.log10(cond_low[1]/3.)))
+    print(str(np.log10(cond_high[0]/3.) - np.log10(cond_low[0]/3.))+', '+str(np.log10(cond_high[1]/3.) - np.log10(cond_low[1]/3.)))
+    print('Cool:')
+    print(str(np.log10(cool_low[0]/3.))+', '+str(np.log10(cool_low[1]/3.)))
+    print(str(np.log10(cool_high[0]/3.) - np.log10(cool_low[0]/3.))+', '+str(np.log10(cool_high[1]/3.) - np.log10(cool_low[1]/3.)))
+'''
+
+
     #if ion['ion'] in ['C III', 'Si IV', 'O VI', 'Mg II']:
     #    ax[ion['axis'][0], ion['axis'][1]].plot([ion['split'][0], ion['split'][2]], [ion['split'][1], ion['split'][3]], linestyle = 'dashed', color = 'gray', alpha = 0.9)
 
 ax[3,0].set_xlabel(r'$log(q)$', fontsize=14)
-ax[2,0].set_ylabel(r'$log(N)$', fontsize=14)
+ax[3,1].set_xlabel(r'$log(q)$', fontsize=14)
+ax[0,0].set_ylabel(r'$log(N_0\ (cm^{-2}))$', fontsize=14)
+ax[1,0].set_ylabel(r'$log(N_0\ (cm^{-2}))$', fontsize=14)
+ax[2,0].set_ylabel(r'$log(N_0\ (cm^{-2}))$', fontsize=14)
+ax[3,0].set_ylabel(r'$log(N_0\ (cm^{-2}))$', fontsize=14)
 ldg = ax[3, 0].legend(loc='upper left', bbox_to_anchor=(0.05, -0.2), fontsize=10, ncol=4)
 #box = ax[ion['axis'][0], ion['axis'][1]].get_position()
 #ax[ion['axis'][0], ion['axis'][1]].set_position([box.x0, box.y0, box.width * 0.8, box.height])
@@ -386,4 +511,4 @@ plt.tight_layout()
 
 
 #fig.savefig('../rankTau'+ion['ionfolder']+ion['ionfolder'][1:-1]+'.png')
-fig.savefig('Num_jumboVel_dashed.png', bbox_extra_artists=(ldg,), bbox_inches='tight')
+fig.savefig('Num_jumboVel_withTemp.pdf', bbox_extra_artists=(ldg,), bbox_inches='tight')
